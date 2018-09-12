@@ -7,11 +7,11 @@
 #include "StateMachine.h"
 #include <LogIt.h>
 #include <LogItComponentIds.h>
-#include <boost/thread.hpp>
-#include <boost/chrono.hpp>
+#include <chrono>
 #include "ScopedTrue.h"
 
-using boost::this_thread::get_id;
+using std::this_thread::get_id;
+using std::chrono::milliseconds;
 
 StateMachine::StateMachine(StateFactory& stateFactory)
 :m_stateFactory(stateFactory), m_stopRunning(false), m_isRunning(false)
@@ -37,7 +37,7 @@ void StateMachine::run(const size_t& reconnectionPauseMs)
 		if(currentStateId == STATE_IDS::DISCONNECT && nextStateId == STATE_IDS::CONNECT && !m_stopRunning)
 		{
 			LOG(Log::INF, STATES)<<__FUNCTION__<<" thread id ["<<get_id()<<"], making transition from DISCONNECT -> RECONNECT, i.e. a reconnection. Sleeping thread for ["<<reconnectionPauseMs<<"s] to avoid thrashing";
-			boost::this_thread::sleep_for(boost::chrono::milliseconds(reconnectionPauseMs));
+			std::this_thread::sleep_for(milliseconds(reconnectionPauseMs));
 		}
 
 		currentStateId = nextStateId;
@@ -64,10 +64,7 @@ bool StateMachine::executeState(const enum STATE_IDS::STATE_ID& stateId) const
 
 	LOG(Log::DBG, STATES)<<__FUNCTION__<<"thread id ["<<get_id()<<"],  starting execution for state id ["<<STATE_IDS::toString(stateId)<<"] object ["<<state->toString()<<"]";
 
-	boost::this_thread::interruption_point();
 	const bool isStateCompletedOk = state->execute();
-	boost::this_thread::interruption_point();
-
 	if(!isStateCompletedOk)
 	{
 		LOG(Log::WRN, STATES)<<__FUNCTION__<<" thread id ["<<get_id()<<"], failure during execution of state ["<<state->toString()<<"]";

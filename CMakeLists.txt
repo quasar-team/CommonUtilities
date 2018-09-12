@@ -1,6 +1,5 @@
 include_directories(
-	include
-	${BOOST_64BIT_HM}/include
+	include	
 )
 
 file(GLOB COMMON_UTILITIES_SRCS src/*.cpp include/*.h)
