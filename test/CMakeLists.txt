@@ -21,7 +21,10 @@ cmake_minimum_required(VERSION 2.8)
 find_package(Threads REQUIRED)
 
 file(GLOB COMMON_UTILITIES_TEST_SRCS src/*.cpp include/*.h)
-include_directories(include)
+include_directories(
+	include
+	${BOOST_64BIT_HM}/include
+)
 
 add_executable(CommonUtilitiesTest 
 	$<TARGET_OBJECTS:CommonUtilities>
