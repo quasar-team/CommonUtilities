@@ -19,7 +19,6 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "MockState.h"
-#include <boost/thread.hpp>
 
 const std::string g_sMockStateInfoString("MockState");
 

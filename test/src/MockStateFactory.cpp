@@ -23,7 +23,6 @@
 
 #include "MockState.h"
 
-using boost::shared_ptr;
 using boost::assign::map_list_of;
 using boost::assign::list_of;
 
