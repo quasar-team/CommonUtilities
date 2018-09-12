@@ -23,6 +23,7 @@
 
 #include "gtest/gtest.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/condition.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <list>
 

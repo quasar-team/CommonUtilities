@@ -21,9 +21,11 @@
 #ifndef STATE_MACHINE_TEST_H_
 #define STATE_MACHINE_TEST_H_
 
-#include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
+#include <thread>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
+
 
 #include "gtest/gtest.h"
 #include "StateMachine.h"
@@ -34,39 +36,37 @@
 class StateMachineTests : public ::testing::Test
 {
 public:
+	enum STATE_MACHINE_THREAD_STATUS { CONSTRUCTED, WAITING_FOR_START, STARTED, COMPLETED };
 
 	class StateMachineThread
 	{
 	public:
-		enum THREAD_STATE {CONSTRUCTED, WAITING_FOR_START, STARTED, COMPLETED};
 
 		StateMachineThread(StateMachine& stateMachine);
+		virtual ~StateMachineThread();
 
 		void operator()();
-		bool start(const size_t& postStartPauseMs);
-		bool waitForThreadState(const THREAD_STATE& targetState);
 
 		StateMachine& m_stateMachine;
 
-		boost::mutex m_mutex;
-		boost::condition m_wait;
-
-		THREAD_STATE m_state;
+		STATE_MACHINE_THREAD_STATUS m_status;
 	};
 
 	StateMachineTests();
-
+	virtual ~StateMachineTests();
 	virtual void TearDown();
 
+	bool startStateMachine();
+	bool stopStateMachine();
+
+	bool waitForStateMachineThreadStatus(const STATE_MACHINE_THREAD_STATUS& targetStatus);
 	bool isMockStateExecuted(const STATE_IDS::STATE_ID& stateId);
-	void waitForStateMachineThreadToExit();
-	bool interruptStateMachineThreadAndWaitForExit();
 
 	bool m_stopRunningFlag;
 	MockStateFactory m_mockStateFactory;
 	StateMachine m_testee;
 	StateMachineThread m_stateMachineThreadObj;
-	boost::thread m_stateMachineThread;
+	std::thread m_stateMachineThread;
 };
 
 #endif /* STATE_MACHINE_TEST_H_ */
