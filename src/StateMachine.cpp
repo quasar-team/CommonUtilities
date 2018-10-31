@@ -22,6 +22,7 @@
 #include <LogIt.h>
 #include <LogItComponentIds.h>
 #include <chrono>
+#include <thread>
 #include "ScopedTrue.h"
 
 using std::this_thread::get_id;

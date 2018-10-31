@@ -21,12 +21,18 @@
 #include "UtilityFunctions.h"
 
 #include <iostream>
-#include<thread>
+#include <thread>
 #include <LogIt.h>
 #include <boost/regex.hpp>
 
 #ifdef _WIN32
 	#include <WS2tcpip.h>
+#else // assume Linux
+	#include <sys/socket.h>
+	#include <sys/types.h>
+	#include <netinet/in.h>
+	#include <netdb.h>
+	#include <arpa/inet.h>
 #endif
 
 using std::string;
