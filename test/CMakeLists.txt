@@ -34,12 +34,18 @@ add_executable(CommonUtilitiesTest
 
 SET (CMAKE_EXE_LINKER_FLAGS -v)
 
+if(WIN32)
+	SET (SOCKET_LIB ws2_32.lib) 
+else()
+	SET (SOCKET_LIB) # empty
+endif()
+
 target_link_libraries (CommonUtilitiesTest
 	gtest_main
 	${CMAKE_THREAD_LIBS_INIT}
 	${BOOST_LIBS}
 	${OPCUA_TOOLKIT_LIBS}
-	ws2_32.lib
+	${SOCKET_LIB}
 )
 
 add_dependencies (CommonUtilitiesTest gtest_main CommonUtilities LogIt)
