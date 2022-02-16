@@ -115,6 +115,15 @@ public:
 	{
 	    return m_queue.empty();
 	}
+
+	size_t discardContents()
+	{
+		std::unique_lock<std::mutex> lock(m_mutex);
+		const size_t numItemsDiscarded = getSize();
+		std::swap(m_queue, std::queue<TQueueItem>());
+		return numItemsDiscarded;
+	}
+
 	const size_t getSize()
 	{
 		return m_queue.size();

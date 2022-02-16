@@ -361,3 +361,12 @@ TEST_F(SharedQueueTest, maxWaitForNonEmptyAsynchronous)
 
     putterThread.join();
 }
+
+TEST_F(SharedQueueTest, testDiscardContents)
+{
+    EXPECT_TRUE(m_testee.isEmpty()) << "initial condition, queue empty";
+    m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(0)));
+    EXPECT_FALSE(m_testee.isEmpty()) << "queue expected not empty";
+    m_testee.discardContents();
+    EXPECT_TRUE(m_testee.isEmpty()) << "final condition, queue empty";
+}
