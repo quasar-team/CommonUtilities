@@ -120,7 +120,8 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		const size_t numItemsDiscarded = getSize();
-		std::swap(m_queue, std::queue<TQueueItem>());
+		std::queue<TQueueItem> emptyQueue;
+		std::swap(m_queue, emptyQueue);
 		return numItemsDiscarded;
 	}
 
