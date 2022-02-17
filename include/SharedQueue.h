@@ -116,13 +116,18 @@ public:
 	    return m_queue.empty();
 	}
 
-	size_t discardContents()
+	size_t discardContents(std::queue<TQueueItem>& discardedContents)
 	{
-		std::unique_lock<std::mutex> lock(m_mutex);
-		const size_t numItemsDiscarded = getSize();
+		// first clear any chud out of discardedContents
 		std::queue<TQueueItem> emptyQueue;
-		std::swap(m_queue, emptyQueue);
-		return numItemsDiscarded;
+		std::swap(discardedContents, emptyQueue);
+
+		// now swap (empty) discardedContents with m_queue (under mutex)
+		{
+			std::unique_lock<std::mutex> lock(m_mutex);
+			std::swap(m_queue, discardedContents);
+		}
+		return discardedContents.size();
 	}
 
 	const size_t getSize()
