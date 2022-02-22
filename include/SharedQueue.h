@@ -116,17 +116,22 @@ public:
 	    return m_queue.empty();
 	}
 
-	size_t discardContents(std::queue<TQueueItem>& discardedContents)
+	size_t discardContents(std::vector<TQueueItem>& discardedContents)
 	{
-		// first clear any chud out of discardedContents
-		std::queue<TQueueItem> emptyQueue;
-		std::swap(discardedContents, emptyQueue);
-
-		// now swap (empty) discardedContents with m_queue (under mutex)
+		// swap live m_queue for a local empty queue, under scoped mutex
+		std::queue<TQueueItem> discardContentsQueue; // empty queue; will use to swap
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
-			std::swap(m_queue, discardedContents);
+			std::swap(m_queue, discardContentsQueue);
 		}
+
+		// copy discarded items from local queue to discardedContents for return to client env
+		while(!discardContentsQueue.empty())
+		{
+			discardedContents.emplace_back(discardContentsQueue.front());
+			discardContentsQueue.pop();
+		}
+
 		return discardedContents.size();
 	}
 

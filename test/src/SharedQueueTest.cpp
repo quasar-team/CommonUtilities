@@ -369,7 +369,7 @@ TEST_F(SharedQueueTest, testDiscardContents)
     m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(1)));
     m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(2)));
     EXPECT_FALSE(m_testee.isEmpty()) << "queue expected not empty";
-    std::queue<QueueItemPtr> discardedContents; // empty
+    std::vector<QueueItemPtr> discardedContents; // empty
     auto result = m_testee.discardContents(discardedContents);
     EXPECT_EQ(3, result) << "returned discarded item count";
     EXPECT_EQ(3, discardedContents.size());
