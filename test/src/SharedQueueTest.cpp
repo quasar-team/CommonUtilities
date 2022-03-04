@@ -361,3 +361,17 @@ TEST_F(SharedQueueTest, maxWaitForNonEmptyAsynchronous)
 
     putterThread.join();
 }
+
+TEST_F(SharedQueueTest, testDiscardContents)
+{
+    EXPECT_TRUE(m_testee.isEmpty()) << "initial condition, queue empty";
+    m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(0)));
+    m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(1)));
+    m_testee.put(QueueItemPtr(new SharedQueueTest::QueueItem(2)));
+    EXPECT_FALSE(m_testee.isEmpty()) << "queue expected not empty";
+    std::vector<QueueItemPtr> discardedContents; // empty
+    auto result = m_testee.discardContents(discardedContents);
+    EXPECT_EQ(3, result) << "returned discarded item count";
+    EXPECT_EQ(3, discardedContents.size());
+    EXPECT_TRUE(m_testee.isEmpty()) << "final condition, queue empty";
+}
