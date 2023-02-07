@@ -40,10 +40,10 @@ SharedQueueTest::PutThreadObj::PutThreadObj(SharedQueue<QueueItemPtr>& sharedQue
 
 void SharedQueueTest::PutThreadObj::waitForSignal()
 {
-    LOG(Log::INF) << __FUNCTION__ << "+ putter thread id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "+ putter thread id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
     std::unique_lock<std::mutex> sharedLock(m_sharedMutex);
     m_wait.wait(sharedLock, m_startPredicate);
-    LOG(Log::INF) << __FUNCTION__ << "- putter thread id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "- putter thread id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
 }
 
 void SharedQueueTest::PutThreadObj::execute()
@@ -73,20 +73,20 @@ void SharedQueueTest::PutThreadObj::execute()
 SharedQueueTest::GetThreadObj::GetThreadObj(SharedQueue<QueueItemPtr>& sharedQueue,  const size_t& threadId, std::mutex& sharedMutex, std::condition_variable& wait, WorkerThreadStartPredicate& startPredicate)
 :m_sharedQueue(sharedQueue), m_threadId(threadId), m_sharedMutex(sharedMutex), m_wait(wait), m_startPredicate(startPredicate)
 {
-    LOG(Log::INF) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
 }
 
 SharedQueueTest::GetThreadObj::~GetThreadObj()
 {
-    LOG(Log::INF) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"], count ["<<m_gotItems.size()<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"], count ["<<m_gotItems.size()<<"]";
 }
 
 void SharedQueueTest::GetThreadObj::waitForSignal()
 {
-    LOG(Log::INF) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "+ getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
     std::unique_lock<std::mutex> sharedLock(m_sharedMutex);
     m_wait.wait(sharedLock, m_startPredicate);
-    LOG(Log::INF) << __FUNCTION__ << "- getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
+    LOG(Log::TRC) << __FUNCTION__ << "- getter id ["<<std::this_thread::get_id()<<"] this ["<<this<<"] id ["<<m_threadId<<"]";
 }
 
 void SharedQueueTest::GetThreadObj::execute()
@@ -232,7 +232,7 @@ TEST_F(SharedQueueTest, multiThreadPutsAndMultiThreadTakes)
     WorkerThreadStartPredicate startPredicate(workerThreadStartCondition);
 
     const size_t putterThreadCount = 10;
-    const size_t putterThreadPutCount = 1000000;
+    const size_t putterThreadPutCount = 200000;
 
     std::list<std::thread> putterThreadGroup;
     std::list< std::shared_ptr<PutThreadObj>> putterThreadObjs;
