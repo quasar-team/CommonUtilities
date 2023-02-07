@@ -42,6 +42,7 @@ endif()
 target_link_libraries (CommonUtilitiesTest
 	gtest_main
 	${CMAKE_THREAD_LIBS_INIT}
+	${BOOST_LIBS}
 	${OPCUA_TOOLKIT_LIBS}
 	${SOCKET_LIB}
 )
