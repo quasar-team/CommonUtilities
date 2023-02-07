@@ -22,9 +22,9 @@
 #define SHAREDQUEUETEST_H_
 
 #include "gtest/gtest.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/shared_mutex.hpp>
+#include <memory>
+#include <condition_variable>
+#include <mutex>
 #include <list>
 
 #include "SharedQueue.h"
@@ -41,7 +41,7 @@ public:
 		QueueItem(const size_t& id);
 		const size_t m_id;
 	};
-	typedef boost::shared_ptr<QueueItem> QueueItemPtr;
+	typedef std::shared_ptr<QueueItem> QueueItemPtr;
 
 	struct WorkerThreadStartPredicate
 	{
@@ -53,17 +53,19 @@ public:
 	class PutThreadObj
 	{
 	public:
-		PutThreadObj(SharedQueue<QueueItemPtr>& sharedQueue, const size_t& threadId, const size_t& numberOfPuts, boost::shared_mutex& sharedMutex, boost::condition& wait, WorkerThreadStartPredicate& startPredicate, const size_t& postStartPause=0);
+		PutThreadObj() = delete;
+		PutThreadObj(const PutThreadObj&) = delete;
+		PutThreadObj(SharedQueue<QueueItemPtr>& sharedQueue, const size_t& threadId, const size_t& numberOfPuts, std::mutex& sharedMutex, std::condition_variable& wait, WorkerThreadStartPredicate& startPredicate, const size_t& postStartPause=0);
 
 		void waitForSignal();
-		void operator()();
+		void execute();
 
 		SharedQueue<QueueItemPtr>& m_sharedQueue;
 		const size_t m_threadId;
 		const size_t m_numberOfPuts;
 
-		boost::shared_mutex& m_sharedMutex;
-		boost::condition& m_wait;
+		std::mutex& m_sharedMutex;
+		std::condition_variable& m_wait;
 		WorkerThreadStartPredicate& m_startPredicate;
 		const size_t m_postStartPause;
 	};
@@ -71,17 +73,20 @@ public:
     class GetThreadObj
     {
     public:
-        GetThreadObj(SharedQueue<QueueItemPtr>& sharedQueue, const size_t& threadId, boost::shared_mutex& sharedMutex, boost::condition& wait, WorkerThreadStartPredicate& startPredicate);
+		GetThreadObj() = delete;
+		GetThreadObj(const GetThreadObj&) = delete;
+        GetThreadObj(SharedQueue<QueueItemPtr>& sharedQueue, const size_t& threadId, std::mutex& sharedMutex, std::condition_variable& wait, WorkerThreadStartPredicate& startPredicate);
+		virtual ~GetThreadObj();
 
         void waitForSignal();
-        void operator()();
+        void execute();
 
         SharedQueue<QueueItemPtr>& m_sharedQueue;
         const size_t m_threadId;
         std::list<QueueItemPtr> m_gotItems;
 
-        boost::shared_mutex& m_sharedMutex;
-        boost::condition& m_wait;
+        std::mutex& m_sharedMutex;
+        std::condition_variable& m_wait;
         WorkerThreadStartPredicate& m_startPredicate;
     };
 
@@ -94,8 +99,8 @@ public:
 
 	SharedQueue<QueueItemPtr> m_testee;
 
-	boost::shared_mutex m_workerThreadMutex;
-	boost::condition m_workerThreadWait;
+	std::mutex m_workerThreadMutex;
+	std::condition_variable m_workerThreadWait;
 };
 
 #endif /* SHAREDQUEUETEST_H_ */

@@ -21,9 +21,10 @@
 #include "UtilityFunctions.h"
 
 #include <iostream>
+#include <memory>
 #include <thread>
 #include <LogIt.h>
-#include <boost/regex.hpp>
+#include <regex>
 
 #ifdef _WIN32
 	#include <WS2tcpip.h>
@@ -69,8 +70,8 @@ bool startWinsock()
 
 bool UtilityFunctions::isDottedQuadIpAddress(const std::string& address)
 {
-	static const boost::regex ipRegex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
-	return boost::regex_match(address, ipRegex);
+	static const std::regex ipRegex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
+	return std::regex_match(address, ipRegex);
 }
 
 std::string UtilityFunctions::convertAddressToIp(const std::string& address)
@@ -92,7 +93,7 @@ std::string UtilityFunctions::convertAddressToIp(const std::string& address)
 
 	struct addrinfo *result = 0;
 	const int returnCode = getaddrinfo(address.c_str(), NULL, &hints, &result);
-	boost::shared_ptr<struct addrinfo> resultPtr(result, &freeaddrinfo);
+	std::shared_ptr<struct addrinfo> resultPtr(result, &freeaddrinfo);
 	if (returnCode != 0)
 	{
 		ostringstream msg;
