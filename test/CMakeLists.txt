@@ -23,7 +23,6 @@ find_package(Threads REQUIRED)
 file(GLOB COMMON_UTILITIES_TEST_SRCS src/*.cpp include/*.h)
 include_directories(
 	include
-	${BOOST_64BIT_HM}/include
 )
 
 add_executable(CommonUtilitiesTest 
@@ -43,7 +42,6 @@ endif()
 target_link_libraries (CommonUtilitiesTest
 	gtest_main
 	${CMAKE_THREAD_LIBS_INIT}
-	${BOOST_LIBS}
 	${OPCUA_TOOLKIT_LIBS}
 	${SOCKET_LIB}
 )

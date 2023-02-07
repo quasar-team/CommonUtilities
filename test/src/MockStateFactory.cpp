@@ -19,12 +19,7 @@
  *  along with Quasar.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "MockStateFactory.h"
-#include <boost/assign/list_of.hpp>
-
 #include "MockState.h"
-
-using boost::assign::map_list_of;
-using boost::assign::list_of;
 
 MockStateFactory::MockStateFactory(bool* const stopRunningFlag)
 {
