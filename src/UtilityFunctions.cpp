@@ -21,6 +21,7 @@
 #include "UtilityFunctions.h"
 
 #include <iostream>
+#include <cstring>
 #include <memory>
 #include <thread>
 #include <LogIt.h>
@@ -80,7 +81,7 @@ std::string UtilityFunctions::convertAddressToIp(const std::string& address)
 
 	LOG(Log::INF) << __FUNCTION__ << " converting address string [" << address << "] to IPv4 dotted quad";
 	struct addrinfo hints;
-	memset(&hints, 0, sizeof(hints));
+	std::memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 
 #ifdef _WIN32
