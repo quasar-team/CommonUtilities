@@ -17,6 +17,8 @@
 # Authors:
 # Ben Farnham <firstNm.secondNm@cern.ch>
 
+cmake_minimum_required(3.30)
+
 include_directories(
 	include	
 )
