@@ -17,7 +17,7 @@
 # Authors:
 # Ben Farnham <firstNm.secondNm@cern.ch>
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.30)
 find_package(Threads REQUIRED)
 
 file(GLOB COMMON_UTILITIES_TEST_SRCS src/*.cpp include/*.h)
